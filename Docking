@@ -1,0 +1,25 @@
+# docking_example.py
+
+from meeko import MoleculePreparation
+from vina import Vina
+
+# Step 1: Prepare ligand
+lig_pdb = "ligand.pdb"  # You need to have this
+lig_prep = MoleculePreparation()
+lig_prep.prepare(lig_pdb)
+
+# Step 2: Set up Vina object
+v = Vina(sf_name='vina')
+
+# Step 3: Load receptor and ligand
+v.set_receptor('receptor.pdbqt')  # Preprocessed with AutoDockTools or Meeko
+v.set_ligand_from_string(lig_prep.write_pdbqt_string())
+
+# Step 4: Define docking box (example coords)
+v.compute_vina_maps(center=[10, 10, 10], box_size=[20, 20, 20])
+
+# Step 5: Run docking
+v.dock(exhaustiveness=8, n_poses=5)
+
+# Step 6: Write results
+v.write_poses('docked_ligand.pdbqt', n_poses=5)
