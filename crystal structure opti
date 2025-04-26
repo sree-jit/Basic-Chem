@@ -1,0 +1,10 @@
+from ase.build import bulk
+from gpaw import GPAW, FermiDirac
+
+si = bulk('Si', 'diamond', a=5.43)
+si.calc = GPAW(mode='pw', xc='PBE', occupations=FermiDirac(0.01), txt='si.log')
+
+from ase.optimize import UnitCellFilter, BFGS
+ucf = UnitCellFilter(si)
+opt = BFGS(ucf)
+opt.run(fmax=0.05)
